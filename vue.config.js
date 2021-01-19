@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/outeach-waste-wizard/',
+  publicPath: '/outreach-waste-wizard/',
 };
