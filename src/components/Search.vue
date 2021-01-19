@@ -1,14 +1,33 @@
 <template>
   <div>
-    <button class="btn-primary">test</button>
-    <div id="v-for-sectors">
-      <input type="text" placeholder="Search" v-debounce:100ms="updateSearch">
-      <ul>
-        <p v-for="value in filteredList" v-bind:key="value">
-          <b>{{ value.title }}</b>
-        </p>
+    <div id="v-for-sectors" class="m-0">
+      <div class="float-left">
+        <label for="searchbar">Search for household item</label>
+        <input type="text"
+               class="form-control w-80 text-center"
+               placeholder="Search"
+               id="searchbar"
+               v-debounce="updateSearch">
+      </div>
+      <ul class="p-2">
+        <div class="row border border-dark p-2" style="text-align: left!important;"
+             v-for="value in filteredList" v-bind:key="value">
+          <div class="col-md-2">
+            {{ value.title }} <br>
+            <img v-bind:src="getImageURL(value.category)" width="60"><br>
+            {{ value.category }}
+          </div>
+          <div v-html="decodeHtml(value.body)" class="col-md-7" style="overflow: hidden">
+          </div>
+          <div class="col-md-3 align-self-center">
+            <button class="btn btn-secondary" @click="addToWasteRoom(value)">
+              Add in Waste Room
+            </button>
+          </div>
+        </div>
       </ul>
     </div>
+    <span style="text-decoration: underline;" @click="loadMore">Load More</span>
   </div>
 </template>
 
@@ -21,6 +40,8 @@ export default {
     return {
       searchQuery: '',
       data: [],
+      totalResults: '',
+      currentResults: 5,
       error: '',
     };
   },
@@ -28,12 +49,24 @@ export default {
     axios.get('https://secure.toronto.ca/cc_sr_v1/data/swm_waste_wizard_APR?limit=1000')
       .then((response) => {
         this.data = response.data;
+        this.totalResults = this.data.length;
       })
       .catch((error) => this.setError(error, 'Something went wrong'));
   },
   methods: {
     setError(error, text) {
       this.error = (error.response && error.response.data && error.response.data.error) || text;
+    },
+    decodeHtml(html) {
+      const txt = document.createElement('textarea');
+      txt.innerHTML = html;
+      return txt.value;
+    },
+    addToWasteRoom(data) {
+      this.$emit('addToWasteRoom', data);
+    },
+    loadMore() {
+      this.currentResults += 5;
     },
     matches(obj) {
       const term = this.searchQuery.toLowerCase();
@@ -42,18 +75,45 @@ export default {
     updateSearch(val) {
       this.searchQuery = val;
     },
+    getImageURL(val) {
+      if (val === 'Garbage') {
+        return '/assets/garbagebin.png';
+      } if (val === 'Blue Bin') {
+        return '/assets/bluebin.png';
+      } if (val === 'Green Bin') {
+        return '/assets/greenbin.png';
+      } if (val === 'HHW') {
+        return '/assets/hhw.jpg';
+      } if (val === 'Depot') {
+        return '/assets/depot.jpg';
+      } if (val === 'Oversize') {
+        return '/assets/oversized.png';
+      } if (val === 'Yard Waste') {
+        return '/assets/yardwaste.png';
+      } if (val === 'Christmas Tree') {
+        return '/assets/christmastree.png';
+      } if (val === 'Metal Items') {
+        return '/assets/metal.png';
+      } if (val === 'Electronic Waste') {
+        return '/assets/ewaste.png';
+      } if (val === 'Not Accepted') {
+        return '/assets/notaccepted.png';
+      }
+      return '/assets/logo.png';
+    },
   },
   computed: {
     listValues() {
       return Object.values(this.data);
     },
-
     filteredList() {
       if (!this.searchQuery) {
-        return this.listValues;
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.totalResults = this.listValues.length;
+        return this.listValues.slice(0, this.currentResults);
       }
 
-      return this.listValues
+      const searchResults = this.listValues
         // eslint-disable-next-line array-callback-return,consistent-return
         .map((v) => {
           if (this.matches(v)) {
@@ -61,6 +121,10 @@ export default {
           }
         })
         .filter((v) => v);
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.totalResults = searchResults.length;
+      return searchResults.slice(0, this.currentResults);
     },
   },
 };
