@@ -98,39 +98,39 @@ export default {
     // Getting the right image URL depending on the type
     getImageURL(val) {
       if (val === 'Garbage') {
-        return '/assets/garbagebin.png';
+        return 'assets/garbagebin.png';
       }
       if (val === 'Blue Bin') {
-        return '/assets/bluebin.png';
+        return 'assets/bluebin.png';
       }
       if (val === 'Green Bin') {
-        return '/assets/greenbin.png';
+        return 'assets/greenbin.png';
       }
       if (val === 'HHW') {
-        return '/assets/hhw.jpg';
+        return 'assets/hhw.jpg';
       }
       if (val === 'Depot') {
-        return '/assets/depot.jpg';
+        return 'assets/depot.jpg';
       }
       if (val === 'Oversize') {
-        return '/assets/oversized.png';
+        return 'assets/oversized.png';
       }
       if (val === 'Yard Waste') {
-        return '/assets/yardwaste.png';
+        return 'assets/yardwaste.png';
       }
       if (val === 'Christmas Tree') {
-        return '/assets/christmastree.png';
+        return 'assets/christmastree.png';
       }
       if (val === 'Metal Items') {
-        return '/assets/metal.png';
+        return 'assets/metal.png';
       }
       if (val === 'Electronic Waste') {
-        return '/assets/ewaste.png';
+        return 'assets/ewaste.png';
       }
       if (val === 'Not Accepted') {
-        return '/assets/notaccepted.png';
+        return 'assets/notaccepted.png';
       }
-      return '/assets/logo.png';
+      return 'assets/logo.png';
     },
   },
   computed: {
