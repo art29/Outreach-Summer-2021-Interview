@@ -20,14 +20,17 @@
           <div v-html="decodeHtml(value.body)" class="col-md-7" style="overflow: hidden">
           </div>
           <div class="col-md-3 align-self-center">
-            <button class="btn btn-secondary" @click="addToWasteRoom(value)">
+            <button class="btn btn-secondary"
+                    :disabled="titles.includes(value.title) === true"
+                    @click="addToWasteRoom(value)">
               Add in Waste Room
             </button>
           </div>
         </div>
       </ul>
     </div>
-    <span style="text-decoration: underline;" @click="loadMore">Load More</span>
+    <span style="text-decoration: underline;" @click="loadMore"
+          v-if="currentResults < totalResults">Load More</span>
   </div>
 </template>
 
@@ -44,6 +47,10 @@ export default {
       currentResults: 5,
       error: '',
     };
+  },
+  props: {
+    titles: {
+    },
   },
   created() {
     axios.get('https://secure.toronto.ca/cc_sr_v1/data/swm_waste_wizard_APR?limit=1000')
