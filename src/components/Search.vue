@@ -119,7 +119,7 @@ export default {
         return 'assets/yardwaste.png';
       }
       if (val === 'Christmas Tree') {
-        return 'assets/christmastree.png';
+        return 'assets/christmastree.jpg';
       }
       if (val === 'Metal Items') {
         return 'assets/metal.png';
